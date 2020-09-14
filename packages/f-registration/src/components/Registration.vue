@@ -13,18 +13,24 @@
             data-test-id="create-account-login-link">
             {{ loginSettings.preLinkText }} <a :href="loginSettings.url">{{ loginSettings.linkText }}</a>
         </p>
+
         <form
             type="post"
             :class="$style['o-form']"
-            @submit.prevent="onFormSubmit"
-        >
+            @submit.prevent="onFormSubmit">
             <!-- TODO WCB-1031 - Extract error messages into a separate component -->
-            <p
-                v-if="genericErrorMessage"
-                :class="$style['o-form-error']">
-                <warning-icon :class="$style['o-form-error-icon']" />
-                {{ genericErrorMessage }}
-            </p>
+
+            <section
+                id="error-summary-container"
+                :class="$style['is-visuallyHidden']"
+                role="alert">
+                <p
+                    v-if="genericErrorMessage"
+                    :class="$style['o-form-error']">
+                    <warning-icon :class="$style['o-form-error-icon']" />
+                    {{ genericErrorMessage }}
+                </p>
+            </section>
             <form-field
                 v-model="firstName"
                 name="firstName"
@@ -249,6 +255,7 @@ export default {
             type: Object,
             default: () => {}
         }
+
     },
 
     data () {
@@ -315,6 +322,10 @@ export default {
         },
         shouldShowLoginLink () {
             return this.loginSettings && this.loginSettings.linkText && this.loginSettings.url;
+        },
+        validationErrorsPresent () {
+            // this.$v.$touch();
+            return this.$v.$invalid;
         },
         tenant () {
             return {
@@ -397,7 +408,33 @@ export default {
 
         isFormInvalid () {
             this.$v.$touch();
-            return this.$v.$invalid;
+            const isInvalid = this.$v.$invalid;
+
+            let errorCount = 0;
+
+            if (this.$v.firstName.$anyError) {
+                errorCount++;
+            }
+
+            if (this.$v.lastName.$anyError) {
+                errorCount++;
+            }
+
+            if (this.$v.email.$anyError) {
+                errorCount++;
+            }
+
+            if (this.$v.password.$anyError) {
+                errorCount++;
+            }
+
+            if (isInvalid) {
+                this.genericErrorMessage = `There are ${errorCount} errors in the form`;
+            } else {
+                this.genericErrorMessage = null;
+            }
+
+            return isInvalid;
         }
     }
 };
