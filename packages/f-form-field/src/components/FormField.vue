@@ -70,6 +70,10 @@ export default {
         dataTestId: {
             type: String,
             default: ''
+        },
+        invalidReason: {
+            type: String,
+            default: null
         }
     },
     computed: {

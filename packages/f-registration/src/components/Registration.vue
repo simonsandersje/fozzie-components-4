@@ -38,28 +38,18 @@
                 label-text="First name"
                 input-type="text"
                 label-style="inline"
+                aria-describedby="error-message-firstname"
+                :aria-invalid="!!describeFirstnameErrorMessage"
                 @blur="$v.firstName.$touch">
-                <template #error>
+                <template
+                    v-if="describeFirstnameErrorMessage"
+                    #error>
                     <p
-                        v-if="shouldShowFirstNameRequiredError"
+                        id="error-message-firstname"
                         :class="$style['o-form-error']"
                         data-test-id='error-first-name-empty'>
                         <warning-icon :class="$style['o-form-error-icon']" />
-                        Please include your first name
-                    </p>
-                    <p
-                        v-if="shouldShowFirstNameMaxLengthError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-first-name-maxlength'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        First name exceeds 50 characters
-                    </p>
-                    <p
-                        v-if="shouldShowFirstNameInvalidCharError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-first-name-invalid'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        First name should only contain letters, hyphens or apostrophes
+                        {{ describeFirstnameErrorMessage }}
                     </p>
                 </template>
             </form-field>
@@ -71,28 +61,18 @@
                 label-text="Last name"
                 input-type="text"
                 label-style="inline"
+                aria-describedby="error-message-lastname"
+                :aria-invalid="!!describeLastnameErrorMessage"
                 @blur="$v.lastName.$touch">
-                <template #error>
+                <template
+                    v-if="describeLastnameErrorMessage"
+                    #error>
                     <p
-                        v-if="shouldShowLastNameRequiredError"
+                        id="error-message-lastname"
                         :class="$style['o-form-error']"
                         data-test-id='error-last-name-empty'>
                         <warning-icon :class="$style['o-form-error-icon']" />
-                        Please include your last name
-                    </p>
-                    <p
-                        v-if="shouldShowLastNameMaxLengthError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-last-name-maxlength'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        Last name exceeds 50 characters
-                    </p>
-                    <p
-                        v-if="shouldShowLastNameInvalidCharError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-last-name-invalid'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        Last name should only contain letters, hyphens or apostrophes
+                        {{ describeLastnameErrorMessage }}
                     </p>
                 </template>
             </form-field>
@@ -104,35 +84,19 @@
                 label-text="Email"
                 input-type="email"
                 label-style="inline"
+                aria-describedby="error-message-email"
+                :aria-invalid="!!describeEmailErrorMessage"
                 @blur="$v.email.$touch">
-                <template #error>
+                <!-- For when we want to add validation on blur of input - @blur="$v.email.$touch" -->
+                <template
+                    v-if="describeEmailErrorMessage"
+                    #error>
                     <p
-                        v-if="shouldShowEmailRequiredError"
+                        id="error-message-email"
                         :class="$style['o-form-error']"
                         data-test-id='error-email-empty'>
                         <warning-icon :class="$style['o-form-error-icon']" />
-                        Please enter your email address
-                    </p>
-                    <p
-                        v-else-if="shouldShowEmailInvalidError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-email-invalid'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        Please enter a valid email address
-                    </p>
-                    <p
-                        v-if="shouldShowEmailMaxLengthError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-email-maxlength'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        Email address exceeds 50 characters
-                    </p>
-                    <p
-                        v-else-if="shouldShowEmailAlreadyExistsError"
-                        :class="$style['o-form-error']"
-                        data-test-id='error-email-exists'>
-                        <warning-icon :class="$style['o-form-error-icon']" />
-                        Email address is already registered
+                        {{ describeEmailErrorMessage }}
                     </p>
                 </template>
             </form-field>
@@ -144,14 +108,18 @@
                 label-text="Password"
                 input-type="password"
                 label-style="inline"
+                aria-describedby="error-message-password"
+                :aria-invalid="!!describePasswordErrorMessage"
                 @blur="$v.password.$touch">
-                <template #error>
+                <template
+                    v-if="shouldShowPasswordRequiredError"
+                    #error>
                     <p
-                        v-if="shouldShowPasswordRequiredError"
+                        id="error-message-password"
                         :class="$style['o-form-error']"
                         data-test-id='error-password-empty'>
                         <warning-icon :class="$style['o-form-error-icon']" />
-                        Please enter a password
+                        {{ describePasswordErrorMessage }}
                     </p>
                     <p
                         v-if="shouldShowPasswordMinLengthError"
@@ -283,7 +251,20 @@ export default {
          * The $dirty boolean changes to true when the user has focused/lost
          * focus on the input field.
          */
+        describeFirstnameErrorMessage () {
+            if (this.shouldShowFirstNameRequiredError) {
+                return 'Please include your first name';
+            }
 
+            if (this.shouldShowFirstNameMaxLengthError) {
+                return 'First name exceeds 50 characters';
+            }
+
+            if (this.shouldShowFirstNameInvalidCharError) {
+                return 'First name should only contain letters, hyphens or apostrophes';
+            }
+            return '';
+        },
         shouldShowFirstNameRequiredError () {
             return !this.$v.firstName.required && this.$v.firstName.$dirty;
         },
@@ -292,6 +273,21 @@ export default {
         },
         shouldShowFirstNameInvalidCharError () {
             return !this.$v.firstName.meetsCharacterValidationRules && this.$v.firstName.$dirty;
+        },
+        describeLastnameErrorMessage () {
+            if (this.shouldShowFirstNameRequiredError) {
+                return 'Please include your last name';
+            }
+
+            if (this.shouldShowFirstNameMaxLengthError) {
+                return 'Last name exceeds 50 characters';
+            }
+
+            if (this.shouldShowFirstNameInvalidCharError) {
+                return 'Last name should only contain letters, hyphens or apostrophes';
+            }
+
+            return '';
         },
         shouldShowLastNameRequiredError () {
             return !this.$v.lastName.required && this.$v.lastName.$dirty;
@@ -302,6 +298,15 @@ export default {
         shouldShowLastNameInvalidCharError () {
             return !this.$v.lastName.meetsCharacterValidationRules && this.$v.lastName.$dirty;
         },
+        describeEmailErrorMessage () {
+            if (this.shouldShowEmailRequiredError) {
+                return 'Please enter your email address';
+            } else if (this.shouldShowEmailInvalidError) {
+                return 'Please enter a valid email address';
+            }
+
+            return '';
+        },
         shouldShowEmailRequiredError () {
             return !this.$v.email.required && this.$v.email.$dirty;
         },
@@ -310,6 +315,12 @@ export default {
         },
         shouldShowEmailInvalidError () {
             return !this.$v.email.email && this.$v.email.$dirty;
+        },
+        describePasswordErrorMessage () {
+            if (this.shouldShowPasswordRequiredError) {
+                return 'Please enter a password';
+            }
+            return '';
         },
         shouldShowPasswordRequiredError () {
             return !this.$v.password.required && this.$v.password.$dirty;
@@ -324,7 +335,6 @@ export default {
             return this.loginSettings && this.loginSettings.linkText && this.loginSettings.url;
         },
         validationErrorsPresent () {
-            // this.$v.$touch();
             return this.$v.$invalid;
         },
         tenant () {
@@ -433,7 +443,6 @@ export default {
             } else {
                 this.genericErrorMessage = null;
             }
-
             return isInvalid;
         }
     }
