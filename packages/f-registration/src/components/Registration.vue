@@ -23,7 +23,8 @@
             <section
                 id="error-summary-container"
                 :class="$style['is-visuallyHidden']"
-                role="alert">
+                role="alert"
+                data-test-id="error-summary-container">
                 <p
                     v-if="genericErrorMessage"
                     :class="$style['o-form-error']">
@@ -359,7 +360,6 @@ export default {
 
             const firstErrorFieldName = this.isFormInvalid();
             if (firstErrorFieldName) {
-                //this.$refs[firstErrorFieldName].focus();
                 return;
             }
 
@@ -423,7 +423,7 @@ export default {
                     errorCount++;
                 }
 
-                this.genericErrorMessage = `There are ${errorCount} errors in the form`;
+                this.genericErrorMessage = `There are ${errorCount} errors in the form.`;
             } else {
                 this.genericErrorMessage = null;
             }

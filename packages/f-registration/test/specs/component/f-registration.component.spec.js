@@ -1,3 +1,5 @@
+
+
 import RegistrationComponent from '../../../test-utils/component-objects/f-registration.component';
 
 describe('f-registration component tests', () => {
@@ -15,6 +17,10 @@ describe('f-registration component tests', () => {
             password: ''
         };
 
+        expect(RegistrationComponent.errorSummaryContainerRole()).toBe('alert');
+        expect(RegistrationComponent.errorSummaryContainerMessageCount()).toBe(0);
+        expect(RegistrationComponent.errorSummaryContainerDisplayed()).toBe(false);
+
         // Act
         RegistrationComponent.submitRegistrationForm(userInfo);
 
@@ -23,6 +29,8 @@ describe('f-registration component tests', () => {
         expect(RegistrationComponent.isLastNameEmptyErrorDisplayed()).toBe(true);
         expect(RegistrationComponent.isEmailEmptyErrorDisplayed()).toBe(true);
         expect(RegistrationComponent.isPasswordEmptyErrorDisplayed()).toBe(true);
+        expect(RegistrationComponent.errorSummaryContainerMessageCount()).toBe(1);
+        expect(RegistrationComponent.errorSummaryContainerMessageText()).toBe('There are 4 errors in the form.');
     });
 
     it('should show and be able to click the legal documentation', () => {

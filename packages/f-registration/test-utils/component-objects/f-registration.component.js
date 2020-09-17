@@ -8,6 +8,7 @@ const createAccountButton = () => registrationComponent().$('[data-test-id="crea
 const termsAndConditionsLink = () => registrationComponent().$('[data-test-id="ts-and-cs-link"]');
 const privacyPolicyLink = () => registrationComponent().$('[data-test-id="privacy-policy-link"]');
 const cookiesPolicyLink = () => registrationComponent().$('[data-test-id="cookies-policy-link"]');
+const errorSummaryContainer = () => $('[data-test-id="error-summary-container"]');
 
 // Validation errors
 const firstNameEmptyError = () => $('[data-test-id="error-first-name-empty"]');
@@ -24,6 +25,8 @@ const emailExistsError = () => $('[data-test-id="error-email-exists"]');
 
 const passwordEmptyError = () => $('[data-test-id="error-password-empty"]');
 
+
+
 /**
  * @description
  * Inputs user details into the registration component and submits the form.
@@ -34,7 +37,7 @@ const passwordEmptyError = () => $('[data-test-id="error-password-empty"]');
  * @param {String} userInfo.email The user's e-mail address
  * @param {String} userInfo.password The user's password
  */
-exports.submitRegistrationForm = (userInfo) => {
+exports.submitRegistrationForm = userInfo => {
     exports.waitForRegistrationForm();
     firstNameInput().setValue(userInfo.firstName);
     lastNameInput().setValue(userInfo.lastName);
@@ -63,4 +66,7 @@ exports.isPasswordEmptyErrorDisplayed = () => passwordEmptyError().isDisplayed()
 exports.termsAndConditionsLinkCanBeClicked = () => termsAndConditionsLink().isClickable();
 exports.privacyPolicyLinkCanBeClicked = () => privacyPolicyLink().isClickable();
 exports.cookiesPolicyLinkCanBeClicked = () => cookiesPolicyLink().isClickable();
-
+exports.errorSummaryContainerMessageCount = () => errorSummaryContainer().$$('p').length;
+exports.errorSummaryContainerMessageText = () => errorSummaryContainer().getText();
+exports.errorSummaryContainerRole = () => errorSummaryContainer().getAttribute('role');
+exports.errorSummaryContainerDisplayed = () => errorSummaryContainer().isDisplayed();
