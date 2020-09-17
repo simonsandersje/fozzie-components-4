@@ -32,6 +32,7 @@
                 </p>
             </section>
             <form-field
+                ref="firstName"
                 v-model="firstName"
                 name="firstName"
                 data-test-id="input-first-name"
@@ -55,6 +56,7 @@
             </form-field>
 
             <form-field
+                ref="lastName"
                 v-model="lastName"
                 name="lastName"
                 data-test-id="input-last-name"
@@ -78,6 +80,7 @@
             </form-field>
 
             <form-field
+                ref="email"
                 v-model="email"
                 name="email"
                 data-test-id="input-email"
@@ -102,6 +105,7 @@
             </form-field>
 
             <form-field
+                ref="password"
                 v-model="password"
                 name="password"
                 data-test-id="input-password"
@@ -112,7 +116,7 @@
                 :aria-invalid="!!describePasswordErrorMessage"
                 @blur="$v.password.$touch">
                 <template
-                    v-if="shouldShowPasswordRequiredError"
+                    v-if="describePasswordErrorMessage"
                     #error>
                     <p
                         id="error-message-password"
@@ -252,78 +256,55 @@ export default {
          * focus on the input field.
          */
         describeFirstnameErrorMessage () {
-            if (this.shouldShowFirstNameRequiredError) {
-                return 'Please include your first name';
-            }
+            if (this.$v.firstName.$dirty)
+            {
+                if (!this.$v.firstName.required) {
+                    return 'Please include your first name';
+                }
 
-            if (this.shouldShowFirstNameMaxLengthError) {
-                return 'First name exceeds 50 characters';
-            }
+                if (!this.$v.firstName.maxLength) {
+                    return 'First name exceeds 50 characters';
+                }
 
-            if (this.shouldShowFirstNameInvalidCharError) {
-                return 'First name should only contain letters, hyphens or apostrophes';
+                if (!this.$v.firstName.meetsCharacterValidationRules) {
+                    return 'First name should only contain letters, hyphens or apostrophes';
+                }
             }
             return '';
-        },
-        shouldShowFirstNameRequiredError () {
-            return !this.$v.firstName.required && this.$v.firstName.$dirty;
-        },
-        shouldShowFirstNameMaxLengthError () {
-            return !this.$v.firstName.maxLength && this.$v.firstName.$dirty;
-        },
-        shouldShowFirstNameInvalidCharError () {
-            return !this.$v.firstName.meetsCharacterValidationRules && this.$v.firstName.$dirty;
         },
         describeLastnameErrorMessage () {
-            if (this.shouldShowFirstNameRequiredError) {
-                return 'Please include your last name';
-            }
+            if (this.$v.lastName.$dirty)
+            {
+                if (!this.$v.lastName.required) {
+                    return 'Please include your last name';
+                }
 
-            if (this.shouldShowFirstNameMaxLengthError) {
-                return 'Last name exceeds 50 characters';
-            }
+                if (!this.$v.lastName.maxLength) {
+                    return 'Last name exceeds 50 characters';
+                }
 
-            if (this.shouldShowFirstNameInvalidCharError) {
-                return 'Last name should only contain letters, hyphens or apostrophes';
+                if (!this.$v.lastName.meetsCharacterValidationRules) {
+                    return 'Last name should only contain letters, hyphens or apostrophes';
+                }
             }
-
             return '';
-        },
-        shouldShowLastNameRequiredError () {
-            return !this.$v.lastName.required && this.$v.lastName.$dirty;
-        },
-        shouldShowLastNameMaxLengthError () {
-            return !this.$v.lastName.maxLength && this.$v.lastName.$dirty;
-        },
-        shouldShowLastNameInvalidCharError () {
-            return !this.$v.lastName.meetsCharacterValidationRules && this.$v.lastName.$dirty;
         },
         describeEmailErrorMessage () {
-            if (this.shouldShowEmailRequiredError) {
-                return 'Please enter your email address';
-            } else if (this.shouldShowEmailInvalidError) {
-                return 'Please enter a valid email address';
-            }
+            if (this.$v.email.$dirty) {
+                if (!this.$v.email.required) {
+                    return 'Please enter your email address';
+                }
 
+                if ( !this.$v.email.email) {
+                    return 'Please enter a valid email address';
+                }
+            }
             return '';
-        },
-        shouldShowEmailRequiredError () {
-            return !this.$v.email.required && this.$v.email.$dirty;
-        },
-        shouldShowEmailMaxLengthError () {
-            return !this.$v.email.maxLength && this.$v.email.$dirty;
-        },
-        shouldShowEmailInvalidError () {
-            return !this.$v.email.email && this.$v.email.$dirty;
         },
         describePasswordErrorMessage () {
-            if (this.shouldShowPasswordRequiredError) {
-                return 'Please enter a password';
-            }
-            return '';
-        },
-        shouldShowPasswordRequiredError () {
-            return !this.$v.password.required && this.$v.password.$dirty;
+            return this.$v.password.$dirty && !this.$v.password.required
+                ? 'Please enter a password'
+                : '';
         },
         shouldShowPasswordMinLengthError () {
             return !this.$v.password.minLength && this.$v.password.$dirty;
@@ -333,9 +314,6 @@ export default {
         },
         shouldShowLoginLink () {
             return this.loginSettings && this.loginSettings.linkText && this.loginSettings.url;
-        },
-        validationErrorsPresent () {
-            return this.$v.$invalid;
         },
         tenant () {
             return {
@@ -376,10 +354,12 @@ export default {
 
     methods: {
         async onFormSubmit () {
-            this.genericErrorMessage = null;
+            this.genericErrorMessage = '';
             this.shouldShowEmailAlreadyExistsError = false;
 
-            if (this.isFormInvalid()) {
+            const firstErrorFieldName = this.isFormInvalid();
+            if (firstErrorFieldName) {
+                //this.$refs[firstErrorFieldName].focus();
                 return;
             }
 
@@ -419,31 +399,36 @@ export default {
         isFormInvalid () {
             this.$v.$touch();
             const isInvalid = this.$v.$invalid;
-
-            let errorCount = 0;
-
-            if (this.$v.firstName.$anyError) {
-                errorCount++;
-            }
-
-            if (this.$v.lastName.$anyError) {
-                errorCount++;
-            }
-
-            if (this.$v.email.$anyError) {
-                errorCount++;
-            }
-
-            if (this.$v.password.$anyError) {
-                errorCount++;
-            }
+            let firstInvalidField = null;
 
             if (isInvalid) {
+                let errorCount = 0;
+
+                if (this.$v.password.$anyError) {
+                    firstInvalidField = 'password';
+                    errorCount++;
+                }
+
+                if (this.$v.email.$anyError) {
+                    firstInvalidField = 'email';
+                    errorCount++;
+                }
+
+                if (this.$v.lastName.$anyError) {
+                    firstInvalidField = 'lastName';
+                    errorCount++;
+                }
+                if (this.$v.firstName.$anyError) {
+                    firstInvalidField = 'firstName';
+                    errorCount++;
+                }
+
                 this.genericErrorMessage = `There are ${errorCount} errors in the form`;
             } else {
                 this.genericErrorMessage = null;
             }
-            return isInvalid;
+
+            return firstInvalidField;
         }
     }
 };

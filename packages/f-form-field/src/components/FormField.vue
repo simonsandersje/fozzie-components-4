@@ -12,6 +12,7 @@
             </form-label>
             <input
                 :id="`${uniqueId}`"
+                ref="input"
                 :value="value"
                 v-bind="$attrs"
                 :type="normalisedInputType"
@@ -115,6 +116,9 @@ export default {
     methods: {
         updateValue (event) {
             this.$emit('input', event.target.value);
+        },
+        focus () {
+            this.$refs.input.focus();
         }
     }
 };
