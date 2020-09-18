@@ -404,13 +404,6 @@ export default {
             if (isInvalid) {
                 let errorCount = 0;
 
-                console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-                console.log(`password:  ${this.$v.password.$anyError}`);
-                console.log(`email:  ${this.$v.email.$anyError}`);
-                console.log(`lastName:  ${this.$v.password.lastName}`);
-                console.log(`firstName:  ${this.$v.password.firstName}`);
-                console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
-
                 if (this.$v.password.$anyError) {
                     firstInvalidField = 'password';
                     errorCount++;
