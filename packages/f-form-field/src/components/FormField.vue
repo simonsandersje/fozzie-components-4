@@ -12,7 +12,6 @@
             </form-label>
             <input
                 :id="`${uniqueId}`"
-                ref="input"
                 :value="value"
                 v-bind="$attrs"
                 :type="normalisedInputType"
@@ -71,10 +70,6 @@ export default {
         dataTestId: {
             type: String,
             default: ''
-        },
-        invalidReason: {
-            type: String,
-            default: null
         }
     },
     computed: {
@@ -116,9 +111,6 @@ export default {
     methods: {
         updateValue (event) {
             this.$emit('input', event.target.value);
-        },
-        focus () {
-            this.$refs.input.focus();
         }
     }
 };
@@ -133,27 +125,27 @@ $form-input-borderColour                  : $grey--light;
 $form-input-borderColour--focus           : $grey--dark;
 
 .c-formField {
-    & + & {
-        margin-top: spacing(x2);
-    }
+  & + & {
+    margin-top: spacing(x2);
+  }
 }
-    .c-formField-inputWrapper {
-        position: relative;
-    }
+.c-formField-inputWrapper {
+  position: relative;
+}
 
-    .c-formField-input {
-        width: 100%;
-        height: 2.5rem;
-        padding: 0.5rem;
-        @include font-size();
-        font-family: $font-family-base;
-        color: $form-input-colour;
-        font-weight: $font-weight-base;
-        background-color: $form-input-bg;
-        border: $form-input-borderWidth solid $form-input-borderColour;
-        border-radius: $form-input-borderRadius;
-        background-clip: padding-box;
-    }
+.c-formField-input {
+  width: 100%;
+  height: 2.5rem;
+  padding: 0.5rem;
+  @include font-size();
+  font-family: $font-family-base;
+  color: $form-input-colour;
+  font-weight: $font-weight-base;
+  background-color: $form-input-bg;
+  border: $form-input-borderWidth solid $form-input-borderColour;
+  border-radius: $form-input-borderRadius;
+  background-clip: padding-box;
+}
 
 
 </style>
