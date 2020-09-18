@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 
+v0.30.0
+------------------------------
+### Changed
+- Addition of a11y support.
+  - Summary alert when there are errors stating how many there are.
+  - Marking invalid fields as such and reading a description of the error.
+- Changed individual field errors to only show one error as this makes a cleaner experience for screen reader users and only trivially affects the experience for sighted users.
+
+
 v0.29.0
 ------------------------------
 ### Changed
