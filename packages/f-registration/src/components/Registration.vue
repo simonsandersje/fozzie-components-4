@@ -257,8 +257,7 @@ export default {
          * focus on the input field.
          */
         describeFirstnameErrorMessage () {
-            if (this.$v.firstName.$dirty)
-            {
+            if (this.$v.firstName.$dirty) {
                 if (!this.$v.firstName.required) {
                     return 'Please include your first name';
                 }
@@ -274,8 +273,7 @@ export default {
             return '';
         },
         describeLastnameErrorMessage () {
-            if (this.$v.lastName.$dirty)
-            {
+            if (this.$v.lastName.$dirty) {
                 if (!this.$v.lastName.required) {
                     return 'Please include your last name';
                 }
@@ -296,7 +294,7 @@ export default {
                     return 'Please enter your email address';
                 }
 
-                if ( !this.$v.email.email) {
+                if (!this.$v.email.email) {
                     return 'Please enter a valid email address';
                 }
             }
@@ -358,8 +356,7 @@ export default {
             this.genericErrorMessage = '';
             this.shouldShowEmailAlreadyExistsError = false;
 
-            const firstErrorFieldName = this.isFormInvalid();
-            if (firstErrorFieldName) {
+            if (this.isFormInvalid()) {
                 return;
             }
 
@@ -397,38 +394,24 @@ export default {
         },
 
         isFormInvalid () {
-            this.$v.$touch();
-            const isInvalid = this.$v.$invalid;
-            let firstInvalidField = null;
-
-            if (isInvalid) {
-                let errorCount = 0;
-
-                if (this.$v.password.$anyError) {
-                    firstInvalidField = 'password';
-                    errorCount++;
-                }
-
-                if (this.$v.email.$anyError) {
-                    firstInvalidField = 'email';
-                    errorCount++;
-                }
-
-                if (this.$v.lastName.$anyError) {
-                    firstInvalidField = 'lastName';
-                    errorCount++;
-                }
-                if (this.$v.firstName.$anyError) {
-                    firstInvalidField = 'firstName';
-                    errorCount++;
-                }
-
-                this.genericErrorMessage = `There are ${errorCount} errors in the form.`;
-            } else {
-                this.genericErrorMessage = null;
+            const v = this.$v;
+            function countErrors () {
+                return [
+                    v.firstName.$anyError,
+                    v.lastName.$anyError,
+                    v.email.$anyError,
+                    v.password.$anyError
+                ].filter(x => x)
+                .length;
             }
 
-            return firstInvalidField;
+            v.$touch();
+
+            if (v.$invalid) {
+                this.genericErrorMessage = `There are ${countErrors()} errors in the form.`;
+            } else {
+                this.genericErrorMessage = '';
+            }
         }
     }
 };

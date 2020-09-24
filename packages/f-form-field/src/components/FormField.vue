@@ -125,26 +125,26 @@ $form-input-borderColour                  : $grey--light;
 $form-input-borderColour--focus           : $grey--dark;
 
 .c-formField {
-  & + & {
-    margin-top: spacing(x2);
-  }
+    & + & {
+      margin-top: spacing(x2);
+    }
 }
 .c-formField-inputWrapper {
-  position: relative;
+    position: relative;
 }
 
 .c-formField-input {
-  width: 100%;
-  height: 2.5rem;
-  padding: 0.5rem;
-  @include font-size();
-  font-family: $font-family-base;
-  color: $form-input-colour;
-  font-weight: $font-weight-base;
-  background-color: $form-input-bg;
-  border: $form-input-borderWidth solid $form-input-borderColour;
-  border-radius: $form-input-borderRadius;
-  background-clip: padding-box;
+    width: 100%;
+    height: 2.5rem;
+    padding: 0.5rem;
+    @include font-size();
+    font-family: $font-family-base;
+    color: $form-input-colour;
+    font-weight: $font-weight-base;
+    background-color: $form-input-bg;
+    border: $form-input-borderWidth solid $form-input-borderColour;
+    border-radius: $form-input-borderRadius;
+    background-clip: padding-box;
 }
 
 
